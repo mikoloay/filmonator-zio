@@ -1,0 +1,8 @@
+name#is_discount#description#price_in_zloty
+Standard Ticket#false#Regular admission ticket for one adult.#35
+Child/Senior Ticket#true#Discounted ticket for children under 12 and seniors over 65.#20
+Student Ticket#true#Discounted ticket for students with valid student ID.#25
+Group Ticket#true#Discounted rate for groups of 5 or more.#30
+Premium Ticket#false#Includes premium seating and a complimentary drink.#50
+Weekday Morning Ticket#true#Special rate for shows before 12 PM on weekdays.#18
+Family Pack#true#Bundle for two adults and two children.#100
