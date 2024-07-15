@@ -9,15 +9,11 @@ import kantan.codecs.resource.ResourceIterator
 
 object CsvReader:
     def readFromFile[T: HeaderDecoder](file: File, separator: Char) =
-        val readerZIO = ZIO.acquireRelease(
-            ZIO.attemptBlockingIO:
-                file.asCsvReader[T](rfc.withHeader.withCellSeparator(separator))
-        ) (
-            (reader: ResourceIterator[ReadResult[T]]) =>
-                ZIO.succeedBlocking(reader.close()) *>
-                ZIO.log("SUCCESSFULLY CLOSED THE FILE")
-        )
-        
+        val readerZIO =
+            ZIO.fromAutoCloseable:
+                ZIO.attemptBlockingIO(file.asCsvReader[T](rfc.withHeader.withCellSeparator(separator)))
+
+
         ZIO.scoped:
             for
                 reader <- readerZIO

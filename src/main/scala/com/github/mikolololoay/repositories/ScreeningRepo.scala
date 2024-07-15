@@ -6,33 +6,14 @@ import io.getquill.jdbczio.Quill
 import java.sql.SQLException
 import com.github.mikolololoay.models.Screening
 
-import utils.TableRepo
 
-// trait ScreeningRepo:
-//     def getAll: ZIO[Any, SQLException, List[Screening]]
-//     def add(screening: Screening): ZIO[Any, SQLException, Long]
-//     def add(newScreenings: List[Screening]): ZIO[Any, SQLException, List[Long]]
-//     def delete(screeningId: String): ZIO[Any, SQLException, Long]
-
-trait ScreeningRepo extends TableRepo[Screening]
-
-
-object ScreeningRepo:
-    def getAll: ZIO[ScreeningRepo, SQLException, List[Screening]] =
-        ZIO.serviceWithZIO[ScreeningRepo](_.getAll)
-    
-    def add(screening: Screening) =
-        ZIO.serviceWithZIO[ScreeningRepo](_.add(screening))
-    
-    def add(newScreenings: List[Screening]) =
-        ZIO.serviceWithZIO[ScreeningRepo](_.add(newScreenings))
-
-    def delete(screeningId: String) =
-        ZIO.serviceWithZIO[ScreeningRepo](_.delete(screeningId))
-
-
-class ScreeningRepoImpl(quill: Quill.Sqlite[SnakeCase]) extends ScreeningRepo:
+class ScreeningRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Screening]:
     import quill.*
+
+
+    // inline given metaSchema: SchemaMeta[Screening] = schemaMeta[Screening]("hehe")\
+
+    override inline val tableName = "screening"
 
     override def getAll: ZIO[Any, SQLException, List[Screening]] = run(query[Screening])
 
@@ -44,8 +25,10 @@ class ScreeningRepoImpl(quill: Quill.Sqlite[SnakeCase]) extends ScreeningRepo:
     override def delete(screeningId: String): ZIO[Any, SQLException, Long] = run:
         query[Screening].filter(screening => screening.screeningId == lift(screeningId)).delete
 
+    def truncate() = run:
+        query[Screening].delete
 
-object ScreeningRepoImpl:
-    val layer: ZLayer[Quill.Sqlite[SnakeCase], Nothing, ScreeningRepo] =
-        ZLayer.fromFunction(quill => new ScreeningRepoImpl(quill))
 
+object ScreeningRepo:
+    val layer: ZLayer[Quill.Sqlite[SnakeCase], Nothing, TableRepo[Screening]] =
+        ZLayer.fromFunction(quill => new ScreeningRepo(quill))

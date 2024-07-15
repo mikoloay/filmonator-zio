@@ -5,34 +5,12 @@ import io.getquill.*
 import io.getquill.jdbczio.Quill
 import java.sql.SQLException
 import com.github.mikolololoay.models.ScreeningRoom
-import utils.TableRepo
 
 
-// trait ScreeningRoomRepo:
-//     def getAll: ZIO[Any, SQLException, List[ScreeningRoom]]
-//     def add(screeningRoom: ScreeningRoom): ZIO[Any, SQLException, Long]
-//     def add(newScreeningRooms: List[ScreeningRoom]): ZIO[Any, SQLException, List[Long]]
-//     def delete(id: String): ZIO[Any, SQLException, Long]
-
-
-trait ScreeningRoomRepo extends TableRepo[ScreeningRoom]
-
-object ScreeningRoomRepo:
-    def getAll: ZIO[ScreeningRoomRepo, SQLException, List[ScreeningRoom]] =
-        ZIO.serviceWithZIO[ScreeningRoomRepo](_.getAll)
-    
-    def add(screeningRoom: ScreeningRoom) =
-        ZIO.serviceWithZIO[ScreeningRoomRepo](_.add(screeningRoom))
-    
-    def add(newScreeningRooms: List[ScreeningRoom]) =
-        ZIO.serviceWithZIO[ScreeningRoomRepo](_.add(newScreeningRooms))
-
-    def delete(id: String) =
-        ZIO.serviceWithZIO[ScreeningRoomRepo](_.delete(id))
-
-
-class ScreeningRoomRepoImpl(quill: Quill.Sqlite[SnakeCase]) extends ScreeningRoomRepo:
+class ScreeningRoomRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[ScreeningRoom]:
     import quill.*
+
+    override inline val tableName = "screening_room"
 
     override def getAll: ZIO[Any, SQLException, List[ScreeningRoom]] = run(query[ScreeningRoom])
 
@@ -44,7 +22,9 @@ class ScreeningRoomRepoImpl(quill: Quill.Sqlite[SnakeCase]) extends ScreeningRoo
     override def delete(id: String): ZIO[Any, SQLException, Long] = run:
         query[ScreeningRoom].filter(screeningRoom => screeningRoom.id == lift(id)).delete
 
+    def truncate() = run:
+        query[ScreeningRoom].delete
 
-object ScreeningRoomRepoImpl:
-    val layer: ZLayer[Quill.Sqlite[SnakeCase], Nothing, ScreeningRoomRepo] =
-        ZLayer.fromFunction(quill => new ScreeningRoomRepoImpl(quill))
+object ScreeningRoomRepo:
+    val layer: ZLayer[Quill.Sqlite[SnakeCase], Nothing, TableRepo[ScreeningRoom]] =
+        ZLayer.fromFunction(quill => new ScreeningRoomRepo(quill))

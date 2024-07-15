@@ -5,34 +5,13 @@ import io.getquill.*
 import io.getquill.jdbczio.Quill
 import java.sql.SQLException
 import com.github.mikolololoay.models.Ticket
-import utils.TableRepo
 
 
-// trait TicketRepo:
-//     def getAll: ZIO[Any, SQLException, List[Ticket]]
-//     def add(ticket: Ticket): ZIO[Any, SQLException, Long]
-//     def add(newTickets: List[Ticket]): ZIO[Any, SQLException, List[Long]]
-//     def delete(id: String): ZIO[Any, SQLException, Long]
-
-
-trait TicketRepo extends TableRepo[Ticket]
-
-object TicketRepo:
-    def getAll: ZIO[TicketRepo, SQLException, List[Ticket]] =
-        ZIO.serviceWithZIO[TicketRepo](_.getAll)
-    
-    def add(ticket: Ticket) =
-        ZIO.serviceWithZIO[TicketRepo](_.add(ticket))
-    
-    def add(newTickets: List[Ticket]) =
-        ZIO.serviceWithZIO[TicketRepo](_.add(newTickets))
-
-    def delete(name: String) =
-        ZIO.serviceWithZIO[TicketRepo](_.delete(name))
-
-
-class TicketRepoImpl(quill: Quill.Sqlite[SnakeCase]) extends TicketRepo:
+class TicketRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Ticket]:
     import quill.*
+
+    override inline val tableName = "ticket"
+
     override def getAll: ZIO[Any, SQLException, List[Ticket]] = run(query[Ticket])
 
     override def add(ticket: Ticket) = run(query[Ticket].insertValue(lift(ticket)))
@@ -43,7 +22,9 @@ class TicketRepoImpl(quill: Quill.Sqlite[SnakeCase]) extends TicketRepo:
     override def delete(name: String): ZIO[Any, SQLException, Long] = run:
         query[Ticket].filter(ticket => ticket.name == lift(name)).delete
 
+    def truncate() = run:
+        query[Ticket].delete
 
-object TicketRepoImpl:
-    val layer: ZLayer[Quill.Sqlite[SnakeCase], Nothing, TicketRepo] =
-        ZLayer.fromFunction(quill => new TicketRepoImpl(quill))
+object TicketRepo:
+    val layer: ZLayer[Quill.Sqlite[SnakeCase], Nothing, TableRepo[Ticket]] =
+        ZLayer.fromFunction(quill => new TicketRepo(quill))
