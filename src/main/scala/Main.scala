@@ -20,6 +20,9 @@ import kantan.csv.ops.*
 import kantan.csv.generic.*
 import com.github.mikolololoay.utils.DatabaseInitializer
 import com.github.mikolololoay.repositories.TableRepo
+import com.github.mikolololoay.http.HttpServer
+import zio.ZLayer
+import zio.http.Server
 
 
 object Main extends ZIOAppDefault:
@@ -28,35 +31,12 @@ object Main extends ZIOAppDefault:
         val dataSourceLayer = Quill.DataSource.fromPrefix("myDatabaseConfig")
         val newMovies = List(Movie("hehe", "film", 2024, "rezyser", "opis", 200))
 
-        (
-            for
-                _ <- TableRepo.delete[Movie]("2f6766a983be487f8f487b3f6f8b2f7b")
-
-
-                // _ <- TableRepo.truncate[Movie]() // ROBIMY TRUNCATE
-
-                // moviesBeforeInsert <- TableRepo.getAll[Movie]
-                // _ <- printLine(moviesBeforeInsert.map(_.name)) // POBIERAMY WSZYSTKIE FILMY (JEST ICH 0!)
-
-                // _ <- DatabaseInitializer.initialize() // DODAJEMY FILMY Z PLIKU CSV!
-
-                // moviesAfterInsert <- TableRepo.getAll[Movie]
-                // _ <- printLine(moviesAfterInsert.map(_.name)) // JEST DUZO FILMOW W BAZIE
-
-                // _ <- TableRepo.add[Movie](newMovies)
-
-                // moviesAfterInsert2 <- TableRepo.getAll[Movie]
-                // _ <- printLine(moviesAfterInsert2.map(_.name)) // JEST DUZO FILMOW W BAZIE
-                // _ <- TableRepo.delete[Movie]("hehe")
-                // moviesAfterDelete <- TableRepo.getAll[Movie]
-                // _ <- printLine(moviesAfterDelete.map(_.name))
-
-                // 
-                // moviesAfterInit <- TableRepo.getAll[Movie]
-                // _ <- printLine(moviesAfterInit.map(_.name))
-            yield ()
-        )
+        HttpServer.start
         .provide(
+            // HTTP Layers
+            ZLayer.succeed(Server.Config.default.port(HttpServer.port)),
+            Server.live,
+            // DB Layers
             MovieRepo.layer,
             quillLayer,
             dataSourceLayer
@@ -64,4 +44,3 @@ object Main extends ZIOAppDefault:
 
     override def run =
         app
-        // DatabaseInitializer.initialize()
