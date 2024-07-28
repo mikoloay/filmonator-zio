@@ -11,8 +11,6 @@ import java.io.IOException
 class MovieRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Movie]:
     import quill.*
 
-    override inline val tableName = "movie"
-
     override def getAll: ZIO[Any, SQLException, List[Movie]] = run(query[Movie])
 
     override def get(id: String): ZIO[Any, SQLException, List[Movie]] = run:
@@ -26,9 +24,24 @@ class MovieRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Movie]:
     override def delete(id: String): ZIO[Any, SQLException, Long] = run:
         query[Movie].filter(movie => movie.id == lift(id)).delete
 
-    def truncate() = run:
+    override def truncate() = run:
         query[Movie].delete
 
+    override def recreateTable() =
+        val dropTable = run:
+            sql"drop table if exists movie".as[Action[Movie]]
+        val createTable = run:
+            sql"""create table movie (
+                id varchar
+                ,name varchar
+                ,year_of_production int
+                ,director varchar
+                ,description varchar
+                ,length_in_minutes int
+            )
+            """.as[Action[Movie]]
+
+        dropTable *> createTable
 
 
 object MovieRepo:

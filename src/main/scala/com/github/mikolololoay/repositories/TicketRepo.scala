@@ -10,8 +10,6 @@ import com.github.mikolololoay.models.Ticket
 class TicketRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Ticket]:
     import quill.*
 
-    override inline val tableName = "ticket"
-
     override def getAll: ZIO[Any, SQLException, List[Ticket]] = run(query[Ticket])
 
     override def get(name: String): ZIO[Any, SQLException, List[Ticket]] = run:
@@ -25,8 +23,18 @@ class TicketRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Ticket]:
     override def delete(name: String): ZIO[Any, SQLException, Long] = run:
         query[Ticket].filter(ticket => ticket.name == lift(name)).delete
 
-    def truncate() = run:
+    override def truncate() = run:
         query[Ticket].delete
+
+    override def recreateTable() = run:
+        sql"""create table ticket (
+            name varchar
+            ,is_discount varchar
+            ,description varchar
+            ,price_in_zloty int
+        );
+        """.as[Action[Ticket]]
+
 
 object TicketRepo:
     val layer: ZLayer[Quill.Sqlite[SnakeCase], Nothing, TableRepo[Ticket]] =

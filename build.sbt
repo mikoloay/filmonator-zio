@@ -9,7 +9,7 @@ val sqlliteJdbcVersion = "3.28.0"
 val munitVersion = "1.0.0"
 val quillZioVersion = "4.8.5"
 val kantanCsvVersion = "0.7.0"
-val tapirVersion = "1.10.13"
+val tapirVersion = "1.10.15"
 
 lazy val root = project
   .in(file("."))

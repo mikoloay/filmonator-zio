@@ -1,7 +1,7 @@
 package com.github.mikolololoay.models
 
-
 import kantan.csv.RowDecoder
+import zio.json.{JsonEncoder, JsonDecoder}
 
 
 final case class ScreeningRoom(
@@ -11,7 +11,8 @@ final case class ScreeningRoom(
     has3d: Boolean,
     screenType: String,
     audioSystem: String
-)
+) derives JsonEncoder,
+        JsonDecoder
 
 
 object ScreeningRoom:

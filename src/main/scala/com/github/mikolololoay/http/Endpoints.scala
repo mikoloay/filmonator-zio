@@ -1,6 +1,5 @@
 package com.github.mikolololoay.http
 
-
 import sttp.tapir.PublicEndpoint
 import sttp.tapir.ztapir.*
 import sttp.tapir.generic.auto.*
@@ -12,58 +11,65 @@ import com.github.mikolololoay.models.Ticket
 import zio.json.JsonEncoder
 import zio.json.JsonDecoder
 import sttp.tapir.Schema
+import zio.http.template.*
+import zio.http.Handler
+import zio.http.template.Element.PartialElement
 
 
 object Endpoints:
-    def crudEndpoints[A : JsonEncoder : JsonDecoder : Schema : Tag](
-        endpointName: String
-    ): List[ZServerEndpoint[TableRepo[A], Any]] =
-        val getAllEndpoint: ZServerEndpoint[TableRepo[A], Any] =
-            endpoint
-                .get
+    def crudEndpoints[A: JsonEncoder: JsonDecoder: Schema: Tag](
+            endpointName: String
+    ) =
+        val getAllEndpoint: PublicEndpoint[Unit, String, List[A], Any] =
+            endpoint.get
                 .in(endpointName)
                 .out(jsonBody[List[A]])
                 .errorOut(stringBody)
+        val getAllServerEndpoint: ZServerEndpoint[TableRepo[A], Any] =
+            getAllEndpoint
                 .zServerLogic(_ => TableRepo.getAll[A].catchAll(e => ZIO.fail(e.getMessage())))
 
-        val getByIdEndpoint: ZServerEndpoint[TableRepo[A], Any] =
-            endpoint
-                .get
-                .in(endpointName / query[String]("id"))
+        val getByIdEndpoint: PublicEndpoint[String, String, List[A], Any] =
+            endpoint.get
+                .in(endpointName / path[String]("id"))
                 .out(jsonBody[List[A]])
                 .errorOut(stringBody)
+        val getByIdServerEndpoint: ZServerEndpoint[TableRepo[A], Any] =
+            getByIdEndpoint
                 .zServerLogic(id => TableRepo.get[A](id).catchAll(e => ZIO.fail(e.getMessage())))
-        
-        List(
+
+        val endpoints = List(
             getAllEndpoint,
             getByIdEndpoint
         )
+        val serverEndpoints = List(
+            getAllServerEndpoint,
+            getByIdServerEndpoint
+        )
+        (endpoints, serverEndpoints)
 
+    val rootEndpoint: PublicEndpoint[Unit, Unit, String, Any] =
+        endpoint.get
+            .in("")
+            .out(htmlBodyUtf8)
 
-    val helloEndpoint: PublicEndpoint[String, Unit, String, Any] =
-        endpoint
-            .get
-            .in("hello" / query[String]("name"))
-            .out(stringBody)
-    val helloServerEndpoint: ZServerEndpoint[Any, Any] =
-        helloEndpoint.zServerLogic(name => ZIO.succeed(s"Siemanko $name"))
-
-    val getMoviesEndpoint: PublicEndpoint[Unit, String, List[Movie], Any] =
-        endpoint
-            .get
-            .in("movies")
-            .out(jsonBody[List[Movie]])
-            .errorOut(stringBody)
-    val getMoviesServerEndpoint: ZServerEndpoint[TableRepo[Movie], Any] =
-        getMoviesEndpoint.zServerLogic(_ =>
-            TableRepo.getAll[Movie]
-                .catchAll(
-                    e => ZIO.fail(e.getMessage())
-                )
+    val rootServerEndpoint: ZServerEndpoint[Any, Any] =
+        rootEndpoint.zServerLogic(_ =>
+            ZIO.succeed:
+                html(
+                    head(
+                        title("FILMONATOR APP")
+                    ),
+                    body(
+                        h1("WITAAAM"),
+                        PartialElement("h3")("Siema.")
+                    )
+                ).encode.toString
         )
 
     type EndpointsEnv = TableRepo[Movie]
 
     val all: List[ZServerEndpoint[EndpointsEnv, Any]] =
-        List(helloServerEndpoint.widen[EndpointsEnv]) ++
-        crudEndpoints[Movie]("movies").map(_.widen[EndpointsEnv])
+        val (endpoints, serverEndpoints) = crudEndpoints[Movie]("movies")
+
+        rootServerEndpoint.widen[EndpointsEnv] :: serverEndpoints.map(_.widen[EndpointsEnv])

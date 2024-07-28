@@ -29,18 +29,21 @@ object Main extends ZIOAppDefault:
     val app =
         val quillLayer = Quill.Sqlite.fromNamingStrategy(SnakeCase)
         val dataSourceLayer = Quill.DataSource.fromPrefix("myDatabaseConfig")
-        val newMovies = List(Movie("hehe", "film", 2024, "rezyser", "opis", 200))
 
-        HttpServer.start
-        .provide(
-            // HTTP Layers
-            ZLayer.succeed(Server.Config.default.port(HttpServer.port)),
-            Server.live,
-            // DB Layers
-            TableRepo.layer,
-            quillLayer,
-            dataSourceLayer
+        (
+            DatabaseInitializer.initialize() *>
+                ZIO.logInfo("Successfully initialized database.") *>
+                HttpServer.start
         )
+            .provide(
+                // HTTP Layers
+                ZLayer.succeed(Server.Config.default.port(HttpServer.port)),
+                Server.live,
+                // DB Layers
+                TableRepo.layer,
+                quillLayer,
+                dataSourceLayer
+            )
 
     override def run =
         app

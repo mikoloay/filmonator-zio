@@ -1,8 +1,30 @@
-## sbt project compiled with Scala 3
+# Filmonator
 
-### Usage
+A fast and reliable cinema management system.
 
-This is a normal sbt project. You can compile code with `sbt compile`, run it with `sbt run`, and `sbt console` will start a Scala 3 REPL.
+Filmonator is a side project created with the sole purpose of becoming a better Scala developer and a better developer in general. In the future I would like to implement the same application with other technologies and languages to have a straightforward comparison of code readability, performance and of how my pleasure I had when using them.
 
-For more information on the sbt-dotty plugin, see the
-[scala3-example-project](https://github.com/scala/scala3-example-project/blob/main/README.md).
+Why a cinema management system? Well, movies are the best form of art and my another big passion along with programming, so I combine them whenever I can.
+
+### Stack
+
+Filmonator-zio is a Scala application build with the principles of functional programming in mind. It uses the following libraries and technologies:
+
+* ZIO - the main framework to manage concurrency, error handling and side effects.
+* Quill - to interact with the database
+* tapir + ZIO HTTP - to define the http server, the endpoints, and to generate OpenAPI documentation
+* htmx (written as Scala using ZIO HTTP Tempates) - for front end
+
+### TODO
+
+* Add tests of course :)
+* Create a nice front page with htmx
+* Document the code
+* Replace Quill with Doobie (maybe in a new repo though)
+* Replace SQLite with Postgres
+* Add scripts to containerize the app and run it with docker-compose
+* Add authentication (login or bearer tokens)
+* Feature ideas:
+  * Fetch movie descriptions from the web and update the table
+  * Add kafka integration
+  * Add the possibility to load csv files from S3/Minio

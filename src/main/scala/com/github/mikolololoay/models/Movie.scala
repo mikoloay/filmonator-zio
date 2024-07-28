@@ -1,9 +1,6 @@
 package com.github.mikolololoay.models
 
-
 import kantan.csv.RowDecoder
-import zio.json.DeriveJsonEncoder
-import zio.json.DeriveJsonDecoder
 import zio.json.{JsonEncoder, JsonDecoder}
 
 
@@ -14,7 +11,9 @@ final case class Movie(
     director: String,
     description: String,
     lengthInMinutes: Int
-) derives JsonEncoder, JsonDecoder
+) derives JsonEncoder,
+        JsonDecoder
+
 
 object Movie:
     given RowDecoder[Movie] = RowDecoder.decoder(0, 1, 2, 3, 4, 5)(Movie.apply)

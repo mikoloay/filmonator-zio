@@ -1,7 +1,7 @@
 package com.github.mikolololoay.models
 
-
 import kantan.csv.RowDecoder
+import zio.json.{JsonEncoder, JsonDecoder}
 
 
 final case class Ticket(
@@ -9,7 +9,8 @@ final case class Ticket(
     isDiscount: Boolean,
     description: String,
     priceInZloty: Int
-)
+) derives JsonEncoder,
+        JsonDecoder
 
 
 object Ticket:

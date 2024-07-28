@@ -10,11 +10,6 @@ import com.github.mikolololoay.models.Screening
 class ScreeningRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Screening]:
     import quill.*
 
-
-    // inline given metaSchema: SchemaMeta[Screening] = schemaMeta[Screening]("hehe")\
-
-    override inline val tableName = "screening"
-
     override def getAll: ZIO[Any, SQLException, List[Screening]] = run(query[Screening])
 
     override def get(screeningId: String): ZIO[Any, SQLException, List[Screening]] = run:
@@ -28,8 +23,17 @@ class ScreeningRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Screening]
     override def delete(screeningId: String): ZIO[Any, SQLException, Long] = run:
         query[Screening].filter(screening => screening.screeningId == lift(screeningId)).delete
 
-    def truncate() = run:
+    override def truncate() = run:
         query[Screening].delete
+
+    override def recreateTable() = run:
+        sql"""create table screening (
+            screening_id varchar
+            ,room_id varchar
+            ,movie_id varchar
+            ,date varchar
+        );
+        """.as[Action[Screening]]
 
 
 object ScreeningRepo:

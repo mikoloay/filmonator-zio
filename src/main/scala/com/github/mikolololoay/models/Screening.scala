@@ -1,7 +1,7 @@
 package com.github.mikolololoay.models
 
-
 import kantan.csv.RowDecoder
+import zio.json.{JsonEncoder, JsonDecoder}
 
 
 final case class Screening(
@@ -9,8 +9,10 @@ final case class Screening(
     roomId: String,
     movieId: String,
     date: String
-)
+) derives JsonEncoder,
+        JsonDecoder
 
 
 object Screening:
-    given RowDecoder[Screening] = RowDecoder.decoder(0, 1, 2, 3)(Screening.apply)
+    given RowDecoder[Screening] =
+        RowDecoder.decoder(0, 1, 2, 3)(Screening.apply)

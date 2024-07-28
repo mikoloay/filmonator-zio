@@ -1,6 +1,5 @@
 package com.github.mikolololoay.http
 
-
 import sttp.tapir.PublicEndpoint
 import sttp.tapir.ztapir.*
 import sttp.tapir.generic.auto.*
@@ -16,9 +15,10 @@ object HttpServer:
     val port = 8081
     val serverOptions: ZioHttpServerOptions[Any] =
         ZioHttpServerOptions.customiseInterceptors.options
+
     val app: Routes[Endpoints.EndpointsEnv, Response] =
         ZioHttpInterpreter(serverOptions).toHttp(Endpoints.all)
-    
+
     val start =
         for
             actualPort <- Server.install(app)
