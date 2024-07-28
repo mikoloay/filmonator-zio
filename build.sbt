@@ -10,6 +10,8 @@ val munitVersion = "1.0.0"
 val quillZioVersion = "4.8.5"
 val kantanCsvVersion = "0.7.0"
 val tapirVersion = "1.10.15"
+val scalatagsVersion = "0.13.1"
+
 
 lazy val root = project
   .in(file("."))
@@ -21,6 +23,8 @@ lazy val root = project
       "org.xerial" % "sqlite-jdbc" % sqlliteJdbcVersion,
       ("com.nrinaudo" %% "kantan.csv-generic" % kantanCsvVersion).cross(CrossVersion.for3Use2_13),
       "com.softwaremill.sttp.tapir" %% "tapir-zio-http-server" % tapirVersion,
-      "com.softwaremill.sttp.tapir" %% "tapir-json-zio" % tapirVersion
-    )
+      "com.softwaremill.sttp.tapir" %% "tapir-json-zio" % tapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % tapirVersion,
+      "com.lihaoyi" %% "scalatags" % scalatagsVersion
+    ),
   )

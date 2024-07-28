@@ -20,10 +20,10 @@ object DatabaseInitializer:
         ZIO.collectAllParDiscard:
             List(
                 initializeTable[Movie]("src/main/resources/initial_csvs/movies.csv", '|'),
-                initializeTable[ScreeningRoom]("src/main/resources/initial_csvs/screening_rooms.csv", '>'),
-                initializeTable[Screening]("src/main/resources/initial_csvs/screenings.csv", ','),
-                initializeTable[Ticket]("src/main/resources/initial_csvs/tickets.csv", '#'),
-                initializeTable[Transaction]("src/main/resources/initial_csvs/transactions.csv", ';')
+                // initializeTable[ScreeningRoom]("src/main/resources/initial_csvs/screening_rooms.csv", '>'),
+                // initializeTable[Screening]("src/main/resources/initial_csvs/screenings.csv", ','),
+                // initializeTable[Ticket]("src/main/resources/initial_csvs/tickets.csv", '#'),
+                // initializeTable[Transaction]("src/main/resources/initial_csvs/transactions.csv", ';')
             )
 
     private def initializeTable[A: HeaderDecoder: Tag](

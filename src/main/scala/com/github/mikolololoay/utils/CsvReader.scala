@@ -6,10 +6,13 @@ import kantan.csv.generic.*
 import java.io.File
 import zio.*
 import kantan.codecs.resource.ResourceIterator
+import scala.io.Codec
 
 
 object CsvReader:
     def readFromFile[T: HeaderDecoder](file: File, separator: Char) =
+        given Codec = Codec.UTF8
+
         val readerZIO =
             ZIO.fromAutoCloseable:
                 ZIO.attemptBlockingIO(

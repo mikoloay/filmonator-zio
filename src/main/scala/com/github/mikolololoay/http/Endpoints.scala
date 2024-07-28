@@ -11,15 +11,14 @@ import com.github.mikolololoay.models.Ticket
 import zio.json.JsonEncoder
 import zio.json.JsonDecoder
 import sttp.tapir.Schema
-import zio.http.template.*
 import zio.http.Handler
 import zio.http.template.Element.PartialElement
+import com.github.mikolololoay.views.{MoviesView, HomePage}
+import sttp.tapir.swagger.bundle.SwaggerInterpreter
 
 
 object Endpoints:
-    def crudEndpoints[A: JsonEncoder: JsonDecoder: Schema: Tag](
-            endpointName: String
-    ) =
+    def crudEndpoints[A: JsonEncoder: JsonDecoder: Schema: Tag](endpointName: String) =
         val getAllEndpoint: PublicEndpoint[Unit, String, List[A], Any] =
             endpoint.get
                 .in(endpointName)
@@ -38,38 +37,31 @@ object Endpoints:
             getByIdEndpoint
                 .zServerLogic(id => TableRepo.get[A](id).catchAll(e => ZIO.fail(e.getMessage())))
 
-        val endpoints = List(
-            getAllEndpoint,
-            getByIdEndpoint
-        )
         val serverEndpoints = List(
             getAllServerEndpoint,
             getByIdServerEndpoint
         )
-        (endpoints, serverEndpoints)
+        serverEndpoints
 
     val rootEndpoint: PublicEndpoint[Unit, Unit, String, Any] =
         endpoint.get
             .in("")
             .out(htmlBodyUtf8)
 
-    val rootServerEndpoint: ZServerEndpoint[Any, Any] =
+    val rootServerEndpoint: ZServerEndpoint[TableRepo[Movie], Any] =
         rootEndpoint.zServerLogic(_ =>
-            ZIO.succeed:
-                html(
-                    head(
-                        title("FILMONATOR APP")
-                    ),
-                    body(
-                        h1("WITAAAM"),
-                        PartialElement("h3")("Siema.")
-                    )
-                ).encode.toString
+            TableRepo
+                .getAll[Movie]
+                .flatMap: movies =>
+                    ZIO.succeed(HomePage.generate(MoviesView.fullBody(movies)).render)
+                .catchAll(e => ZIO.fail(e.getMessage()))
         )
 
     type EndpointsEnv = TableRepo[Movie]
 
     val all: List[ZServerEndpoint[EndpointsEnv, Any]] =
-        val (endpoints, serverEndpoints) = crudEndpoints[Movie]("movies")
-
-        rootServerEndpoint.widen[EndpointsEnv] :: serverEndpoints.map(_.widen[EndpointsEnv])
+        val allCrudEndpoints = crudEndpoints[Movie]("movies")
+        val serverEndpoints = rootServerEndpoint.widen[EndpointsEnv] :: allCrudEndpoints.map(_.widen[EndpointsEnv])
+        val swaggerEndpoints = SwaggerInterpreter()
+            .fromServerEndpoints(serverEndpoints, "Filmonator", "1.0")
+        serverEndpoints ++ swaggerEndpoints

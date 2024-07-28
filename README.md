@@ -13,7 +13,7 @@ Filmonator-zio is a Scala application build with the principles of functional pr
 * ZIO - the main framework to manage concurrency, error handling and side effects.
 * Quill - to interact with the database
 * tapir + ZIO HTTP - to define the http server, the endpoints, and to generate OpenAPI documentation
-* htmx (written as Scala using ZIO HTTP Tempates) - for front end
+* htmx (written as Scala using Scalatags) - for front end
 
 ### TODO
 
