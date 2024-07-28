@@ -4,6 +4,8 @@ A fast and reliable cinema management system.
 
 Filmonator is a side project created with the sole purpose of becoming a better Scala developer and a better developer in general. In the future I would like to implement the same application with other technologies and languages to have a straightforward comparison of code readability, performance and of how much pleasure I had when using them.
 
+May this project also serve as another publicly available example of a full-stack Scala 3 application. They are scarce and it's always good to have them for reference.
+
 Why a cinema management system? Well, movies are the best form of art and my another big passion along with programming, so I combine them whenever I can.
 
 ### Stack
