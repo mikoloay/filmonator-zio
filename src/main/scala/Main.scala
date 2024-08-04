@@ -6,7 +6,7 @@ import io.getquill.*
 import zio.ZIO
 import zio.Console.*
 import io.getquill.jdbczio.Quill
-import com.github.mikolololoay.models.{Movie, Transaction}
+import com.github.mikolololoay.models.{Movie, TicketTransaction}
 import com.github.mikolololoay.repositories.MovieRepo
 import com.github.mikolololoay.utils.CsvReader
 
@@ -27,7 +27,7 @@ import zio.http.Server
 
 object Main extends ZIOAppDefault:
     val app =
-        val quillLayer = Quill.Sqlite.fromNamingStrategy(SnakeCase)
+        val quillLayer = Quill.Postgres.fromNamingStrategy(SnakeCase)
         val dataSourceLayer = Quill.DataSource.fromPrefix("myDatabaseConfig")
 
         (

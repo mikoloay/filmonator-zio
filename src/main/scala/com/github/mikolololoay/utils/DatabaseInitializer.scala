@@ -7,7 +7,7 @@ import java.io.File
 import com.github.mikolololoay.models.Ticket
 import com.github.mikolololoay.models.Screening
 import com.github.mikolololoay.models.ScreeningRoom
-import com.github.mikolololoay.models.Transaction
+import com.github.mikolololoay.models.TicketTransaction
 import com.github.mikolololoay.repositories.TableRepo
 import izumi.reflect.Tag
 import kantan.csv.HeaderDecoder
@@ -20,10 +20,10 @@ object DatabaseInitializer:
         ZIO.collectAllParDiscard:
             List(
                 initializeTable[Movie]("src/main/resources/initial_csvs/movies.csv", '|'),
-                // initializeTable[ScreeningRoom]("src/main/resources/initial_csvs/screening_rooms.csv", '>'),
-                // initializeTable[Screening]("src/main/resources/initial_csvs/screenings.csv", ','),
-                // initializeTable[Ticket]("src/main/resources/initial_csvs/tickets.csv", '#'),
-                // initializeTable[Transaction]("src/main/resources/initial_csvs/transactions.csv", ';')
+                initializeTable[ScreeningRoom]("src/main/resources/initial_csvs/screening_rooms.csv", '>'),
+                initializeTable[Screening]("src/main/resources/initial_csvs/screenings.csv", ','),
+                initializeTable[Ticket]("src/main/resources/initial_csvs/tickets.csv", '#'),
+                initializeTable[TicketTransaction]("src/main/resources/initial_csvs/transactions.csv", ';')
             )
 
     private def initializeTable[A: HeaderDecoder: Tag](

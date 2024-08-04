@@ -4,7 +4,7 @@ import kantan.csv.RowDecoder
 import zio.json.{JsonEncoder, JsonDecoder}
 
 
-final case class Transaction(
+final case class TicketTransaction(
     id: String,
     screeningId: String,
     ticketType: String
@@ -12,6 +12,6 @@ final case class Transaction(
         JsonDecoder
 
 
-object Transaction:
-    given RowDecoder[Transaction] =
-        RowDecoder.decoder(0, 1, 2)(Transaction.apply)
+object TicketTransaction:
+    given RowDecoder[TicketTransaction] =
+        RowDecoder.decoder(0, 1, 2)(TicketTransaction.apply)

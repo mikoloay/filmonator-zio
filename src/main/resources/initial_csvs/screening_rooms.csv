@@ -1,4 +1,4 @@
-id>room_name>capacity>has_3d>screen_type>audio_system
+id>room_name>capacity>has3d>screen_type>audio_system
 e4d909c290d0fb1ca068ffaddf22cbd0>Room A>150>true>IMAX>Dolby Atmos
 8d777f385d3dfec8815d20f7496026dc>Room B>200>false>Standard>Dolby 7.1
 7377efc9248b6d6c2c6f1f346a53e7a9>Room C>120>true>IMAX>DTS:X

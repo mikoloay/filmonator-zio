@@ -7,7 +7,7 @@ import java.sql.SQLException
 import com.github.mikolololoay.models.Screening
 
 
-class ScreeningRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Screening]:
+class ScreeningRepo(quill: Quill.Postgres[SnakeCase]) extends TableRepo[Screening]:
     import quill.*
 
     override def getAll: ZIO[Any, SQLException, List[Screening]] = run(query[Screening])
@@ -26,16 +26,21 @@ class ScreeningRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Screening]
     override def truncate() = run:
         query[Screening].delete
 
-    override def recreateTable() = run:
-        sql"""create table screening (
-            screening_id varchar
-            ,room_id varchar
-            ,movie_id varchar
-            ,date varchar
-        );
-        """.as[Action[Screening]]
+    override def recreateTable() =
+        val dropTable = run:
+            sql"drop table if exists screening".as[Action[Screening]]
+        val createTable = run:
+            sql"""create table screening (
+                screening_id varchar
+                ,room_id varchar
+                ,movie_id varchar
+                ,date varchar
+            );
+            """.as[Action[Screening]]
+
+        dropTable *> createTable
 
 
 object ScreeningRepo:
-    val layer: ZLayer[Quill.Sqlite[SnakeCase], Nothing, TableRepo[Screening]] =
+    val layer: ZLayer[Quill.Postgres[SnakeCase], Nothing, TableRepo[Screening]] =
         ZLayer.fromFunction(quill => new ScreeningRepo(quill))

@@ -7,7 +7,7 @@ import java.sql.SQLException
 import com.github.mikolololoay.models.Ticket
 
 
-class TicketRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Ticket]:
+class TicketRepo(quill: Quill.Postgres[SnakeCase]) extends TableRepo[Ticket]:
     import quill.*
 
     override def getAll: ZIO[Any, SQLException, List[Ticket]] = run(query[Ticket])
@@ -26,16 +26,21 @@ class TicketRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Ticket]:
     override def truncate() = run:
         query[Ticket].delete
 
-    override def recreateTable() = run:
-        sql"""create table ticket (
-            name varchar
-            ,is_discount varchar
-            ,description varchar
-            ,price_in_zloty int
-        );
-        """.as[Action[Ticket]]
+    override def recreateTable() =
+        val dropTable = run:
+            sql"drop table if exists ticket".as[Action[Ticket]]
+        val createTable = run:
+            sql"""create table ticket (
+                name varchar
+                ,is_discount varchar
+                ,description varchar
+                ,price_in_zloty int
+            );
+            """.as[Action[Ticket]]
+
+        dropTable *> createTable
 
 
 object TicketRepo:
-    val layer: ZLayer[Quill.Sqlite[SnakeCase], Nothing, TableRepo[Ticket]] =
+    val layer: ZLayer[Quill.Postgres[SnakeCase], Nothing, TableRepo[Ticket]] =
         ZLayer.fromFunction(quill => new TicketRepo(quill))

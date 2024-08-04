@@ -21,9 +21,9 @@ Filmonator-zio is a Scala application build with the principles of functional pr
 * Create a nice front page with htmx
 * Document the code
 * Replace Quill with Doobie (maybe in a new repo though)
-* Replace SQLite with Postgres
 * Add scripts to containerize the app and run it with docker-compose
 * Add authentication (login or bearer tokens)
+* Print more logs from the http server
 * Feature ideas:
   * Fetch movie descriptions from the web and update the table
   * Add kafka integration

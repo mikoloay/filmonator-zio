@@ -8,7 +8,7 @@ import com.github.mikolololoay.models.Movie
 import java.io.IOException
 
 
-class MovieRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Movie]:
+class MovieRepo(quill: Quill.Postgres[SnakeCase]) extends TableRepo[Movie]:
     import quill.*
 
     override def getAll: ZIO[Any, SQLException, List[Movie]] = run(query[Movie])
@@ -45,5 +45,5 @@ class MovieRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Movie]:
 
 
 object MovieRepo:
-    val layer: ZLayer[Quill.Sqlite[SnakeCase], Nothing, TableRepo[Movie]] =
+    val layer: ZLayer[Quill.Postgres[SnakeCase], Nothing, TableRepo[Movie]] =
         ZLayer.fromFunction(quill => new MovieRepo(quill))

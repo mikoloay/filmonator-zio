@@ -7,7 +7,7 @@ import java.sql.SQLException
 import com.github.mikolololoay.models.ScreeningRoom
 
 
-class ScreeningRoomRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[ScreeningRoom]:
+class ScreeningRoomRepo(quill: Quill.Postgres[SnakeCase]) extends TableRepo[ScreeningRoom]:
     import quill.*
 
     override def getAll: ZIO[Any, SQLException, List[ScreeningRoom]] = run(query[ScreeningRoom])
@@ -26,18 +26,23 @@ class ScreeningRoomRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Screen
     override def truncate() = run:
         query[ScreeningRoom].delete
 
-    override def recreateTable() = run:
-        sql"""create table screening_room (
-            id varchar
-            ,room_name varchar
-            ,capacity int
-            has_3d bool
-            ,screen_type varchar
-            ,audio_system varchar
-        );
-        """.as[Action[ScreeningRoom]]
+    override def recreateTable() =
+        val dropTable = run:
+            sql"drop table if exists screening_room".as[Action[ScreeningRoom]]
+        val createTable = run:
+            sql"""create table screening_room (
+                id varchar
+                ,room_name varchar
+                ,capacity int
+                ,has3d bool
+                ,screen_type varchar
+                ,audio_system varchar
+            );
+            """.as[Action[ScreeningRoom]]
+
+        dropTable *> createTable
 
 
 object ScreeningRoomRepo:
-    val layer: ZLayer[Quill.Sqlite[SnakeCase], Nothing, TableRepo[ScreeningRoom]] =
+    val layer: ZLayer[Quill.Postgres[SnakeCase], Nothing, TableRepo[ScreeningRoom]] =
         ZLayer.fromFunction(quill => new ScreeningRoomRepo(quill))
