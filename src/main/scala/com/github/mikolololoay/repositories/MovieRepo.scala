@@ -15,6 +15,9 @@ class MovieRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Movie]:
 
     override def getAll: ZIO[Any, SQLException, List[Movie]] = run(query[Movie])
 
+    override def get(id: String): ZIO[Any, SQLException, List[Movie]] = run:
+        query[Movie].filter(movie => movie.id == lift(id))
+
     override def add(movie: Movie) = run(query[Movie].insertValue(lift(movie)))
 
     override def add(newMovies: List[Movie]) = run:

@@ -16,7 +16,7 @@ object HttpServer:
     val port = 8081
     val serverOptions: ZioHttpServerOptions[Any] =
         ZioHttpServerOptions.customiseInterceptors.options
-    val app: Routes[TableRepo[Movie], Response] =
+    val app: Routes[Endpoints.EndpointsEnv, Response] =
         ZioHttpInterpreter(serverOptions).toHttp(Endpoints.all)
     
     val start =

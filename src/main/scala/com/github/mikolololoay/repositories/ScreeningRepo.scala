@@ -17,6 +17,9 @@ class ScreeningRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Screening]
 
     override def getAll: ZIO[Any, SQLException, List[Screening]] = run(query[Screening])
 
+    override def get(screeningId: String): ZIO[Any, SQLException, List[Screening]] = run:
+        query[Screening].filter(screening => screening.screeningId == lift(screeningId))
+
     override def add(screening: Screening) = run(query[Screening].insertValue(lift(screening)))
 
     override def add(newScreenings: List[Screening]) = run:

@@ -14,6 +14,9 @@ class TicketRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Ticket]:
 
     override def getAll: ZIO[Any, SQLException, List[Ticket]] = run(query[Ticket])
 
+    override def get(name: String): ZIO[Any, SQLException, List[Ticket]] = run:
+        query[Ticket].filter(ticket => ticket.name == lift(name))
+
     override def add(ticket: Ticket) = run(query[Ticket].insertValue(lift(ticket)))
 
     override def add(newTickets: List[Ticket]) = run:

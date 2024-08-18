@@ -14,6 +14,9 @@ class TransactionRepo(quill: Quill.Sqlite[SnakeCase]) extends TableRepo[Transact
     
     override def getAll: ZIO[Any, SQLException, List[Transaction]] = run(query[Transaction])
 
+    override def get(id: String): ZIO[Any, SQLException, List[Transaction]] = run:
+        query[Transaction].filter(transaction => transaction.id == lift(id))
+
     override def add(transaction: Transaction) = run(query[Transaction].insertValue(lift(transaction)))
 
     override def add(newTransactions: List[Transaction]) = run:

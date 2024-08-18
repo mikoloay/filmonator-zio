@@ -37,7 +37,7 @@ object Main extends ZIOAppDefault:
             ZLayer.succeed(Server.Config.default.port(HttpServer.port)),
             Server.live,
             // DB Layers
-            MovieRepo.layer,
+            TableRepo.layer,
             quillLayer,
             dataSourceLayer
         )
