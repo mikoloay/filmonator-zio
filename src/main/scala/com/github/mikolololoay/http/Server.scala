@@ -7,7 +7,7 @@ import zio.*
 import zio.http.{Routes, Response, Server}
 import sttp.tapir.server.ziohttp.ZioHttpInterpreter
 import sttp.tapir.server.ziohttp.ZioHttpServerOptions
-import com.github.mikolololoay.repositories.TableRepo
+import com.github.mikolololoay.repositories.tablerepos.TableRepo
 import com.github.mikolololoay.models.Movie
 
 

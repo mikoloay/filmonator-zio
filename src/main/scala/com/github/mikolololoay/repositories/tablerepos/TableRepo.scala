@@ -1,4 +1,4 @@
-package com.github.mikolololoay.repositories
+package com.github.mikolololoay.repositories.tablerepos
 
 import zio.ZIO
 import java.sql.SQLException

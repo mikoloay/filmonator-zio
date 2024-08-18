@@ -1,4 +1,4 @@
-package com.github.mikolololoay.repositories
+package com.github.mikolololoay.repositories.tablerepos
 
 import zio.*
 import io.getquill.*

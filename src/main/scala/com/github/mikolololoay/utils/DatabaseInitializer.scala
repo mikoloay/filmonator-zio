@@ -1,14 +1,9 @@
 package com.github.mikolololoay.utils
 
 import zio.*
-import com.github.mikolololoay.models.Movie
-
+import com.github.mikolololoay.models.{Movie, Screening, ScreeningRoom, Ticket, TicketTransaction}
 import java.io.File
-import com.github.mikolololoay.models.Ticket
-import com.github.mikolololoay.models.Screening
-import com.github.mikolololoay.models.ScreeningRoom
-import com.github.mikolololoay.models.TicketTransaction
-import com.github.mikolololoay.repositories.TableRepo
+import com.github.mikolololoay.repositories.tablerepos.TableRepo
 import izumi.reflect.Tag
 import kantan.csv.HeaderDecoder
 import java.sql.SQLException

@@ -7,7 +7,7 @@ import zio.ZIO
 import zio.Console.*
 import io.getquill.jdbczio.Quill
 import com.github.mikolololoay.models.{Movie, TicketTransaction}
-import com.github.mikolololoay.repositories.MovieRepo
+import com.github.mikolololoay.repositories.tablerepos.MovieRepo
 import com.github.mikolololoay.utils.CsvReader
 
 import scala.io.Source
@@ -19,10 +19,11 @@ import kantan.csv.*
 import kantan.csv.ops.*
 import kantan.csv.generic.*
 import com.github.mikolololoay.utils.DatabaseInitializer
-import com.github.mikolololoay.repositories.TableRepo
+import com.github.mikolololoay.repositories.tablerepos.TableRepo
 import com.github.mikolololoay.http.HttpServer
 import zio.ZLayer
 import zio.http.Server
+import com.github.mikolololoay.repositories.AggregationsRepo
 
 
 object Main extends ZIOAppDefault:
@@ -33,7 +34,7 @@ object Main extends ZIOAppDefault:
         (
             DatabaseInitializer.initialize() *>
                 ZIO.logInfo("Successfully initialized database.") *>
-                HttpServer.start
+                HttpServer.start.debug
         )
             .provide(
                 // HTTP Layers
@@ -41,6 +42,7 @@ object Main extends ZIOAppDefault:
                 Server.live,
                 // DB Layers
                 TableRepo.layer,
+                AggregationsRepo.layer,
                 quillLayer,
                 dataSourceLayer
             )

@@ -5,9 +5,9 @@ import scalatags.Text.TypedTag
 import scalatags.Text.all.*
 
 
-object HomePage {
+object PageGenerator:
     def generate(bodyContents: TypedTag[String]): TypedTag[String] = generate(List(bodyContents))
-    def generate(bodyContents: List[TypedTag[String]] = List.empty): TypedTag[String] = {
+    def generate(bodyContents: List[TypedTag[String]] = List.empty): TypedTag[String] =
         html(
             head(
                 link(rel := "stylesheet", href := "https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"),
@@ -22,5 +22,3 @@ object HomePage {
                 )
             )
         )
-    }
-}

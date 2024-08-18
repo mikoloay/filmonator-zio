@@ -4,7 +4,7 @@ import sttp.tapir.PublicEndpoint
 import sttp.tapir.ztapir.*
 import sttp.tapir.generic.auto.*
 import zio.*
-import com.github.mikolololoay.repositories.TableRepo
+import com.github.mikolololoay.repositories.tablerepos.TableRepo
 import com.github.mikolololoay.models.{Movie, Screening, ScreeningRoom, Ticket, TicketTransaction}
 import sttp.tapir.json.zio.*
 import zio.json.JsonEncoder
@@ -12,7 +12,7 @@ import zio.json.JsonDecoder
 import sttp.tapir.Schema
 import zio.http.Handler
 import zio.http.template.Element.PartialElement
-import com.github.mikolololoay.views.{MoviesView, HomePage}
+import com.github.mikolololoay.views.{MoviesView, PageGenerator}
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 import com.github.mikolololoay.http.Endpoints.EndpointsEnv
 import sttp.tapir.docs.openapi.OpenAPIDocsOptions
