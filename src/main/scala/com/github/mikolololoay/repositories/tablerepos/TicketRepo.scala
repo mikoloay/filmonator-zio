@@ -13,15 +13,24 @@ class TicketRepo(quill: Quill.Postgres[SnakeCase]) extends TableRepo[Ticket]:
     override def getAll: ZIO[Any, SQLException, List[Ticket]] = run(query[Ticket])
 
     override def get(name: String): ZIO[Any, SQLException, List[Ticket]] = run:
-        query[Ticket].filter(ticket => ticket.name == lift(name))
+        query[Ticket].filter(_.name == lift(name))
 
     override def add(ticket: Ticket) = run(query[Ticket].insertValue(lift(ticket)))
 
     override def add(newTickets: List[Ticket]) = run:
         liftQuery(newTickets).foreach(query[Ticket].insertValue(_))
 
+    override def upsert(ticket: Ticket) =
+        val name = ticket.name
+        val existTicketsWithId = get(name).map(_.nonEmpty)
+        ZIO.ifZIO(existTicketsWithId)(
+            onTrue = run:
+                query[Ticket].filter(_.name == lift(name)).updateValue(lift(ticket)),
+            onFalse = add(ticket)
+        )
+
     override def delete(name: String): ZIO[Any, SQLException, Long] = run:
-        query[Ticket].filter(ticket => ticket.name == lift(name)).delete
+        query[Ticket].filter(_.name == lift(name)).delete
 
     override def truncate() = run:
         query[Ticket].delete

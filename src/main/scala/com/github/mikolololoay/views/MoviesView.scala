@@ -48,17 +48,6 @@ object MoviesView:
                         )
                     )
                 )
-            ),
-            div(
-                style := "display: flex; justify-content: space-between",
-                button(
-                    style := "width: 160px",
-                    HtmxAttributes.get(s"/movies"),
-                    HtmxAttributes.target("closest tr"),
-                    HtmxAttributes.swap("outerHTML"),
-                    HtmxAttributes.select("tbody > tr"),
-                    "Load More"
-                )
             )
         )
     )

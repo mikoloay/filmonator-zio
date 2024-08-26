@@ -26,25 +26,62 @@ object ApiEndpoints:
         .errorOut(stringBody)
 
     def crudEndpoints[A: JsonEncoder: JsonDecoder: Schema: Tag](endpointName: String) =
-        val getAllEndpoint: PublicEndpoint[Unit, String, List[A], Any] =
+        val getAll: ZServerEndpoint[TableRepo[A], Any] =
             baseApiEndpoint.get
                 .in(endpointName)
                 .out(jsonBody[List[A]])
-        val getAllServerEndpoint: ZServerEndpoint[TableRepo[A], Any] =
-            getAllEndpoint
                 .zServerLogic(_ => TableRepo.getAll[A].catchAll(e => ZIO.fail(e.getMessage())))
 
-        val getByIdEndpoint: PublicEndpoint[String, String, List[A], Any] =
+        val getById: ZServerEndpoint[TableRepo[A], Any] =
             baseApiEndpoint.get
                 .in(endpointName / path[String]("id"))
                 .out(jsonBody[List[A]])
-        val getByIdServerEndpoint: ZServerEndpoint[TableRepo[A], Any] =
-            getByIdEndpoint
                 .zServerLogic(id => TableRepo.get[A](id).catchAll(e => ZIO.fail(e.getMessage())))
 
+        val addMultiple: ZServerEndpoint[TableRepo[A], Any] =
+            baseApiEndpoint.post
+                .in(endpointName)
+                .in(jsonBody[List[A]])
+                .out(stringBody)
+                .zServerLogic(items =>
+                    (
+                        TableRepo.add[A](items) *>
+                        ZIO.succeed(s"Successfully added ${items.size} new $endpointName.")
+                    )
+                    .catchAll(e => ZIO.fail(e.getMessage()))
+                )
+    
+        val upsert: ZServerEndpoint[TableRepo[A], Any] =
+            baseApiEndpoint.put
+                .in(endpointName)
+                .in(jsonBody[A])
+                .out(stringBody)
+                .zServerLogic(item =>
+                    (
+                        TableRepo.upsert[A](item) *>
+                        ZIO.succeed(s"Successfully upserted item.")
+                    )
+                    .catchAll(e => ZIO.fail(e.getMessage()))
+                )
+        
+        val delete: ZServerEndpoint[TableRepo[A], Any] =
+            baseApiEndpoint.delete
+                .in(endpointName / path[String]("id"))
+                .out(stringBody)
+                .zServerLogic(id =>
+                    (
+                        TableRepo.delete[A](id) *>
+                        ZIO.succeed(s"Successfully deleted item.")
+                    )
+                    .catchAll(e => ZIO.fail(e.getMessage()))
+                )
+
         val serverEndpoints = List(
-            getAllServerEndpoint,
-            getByIdServerEndpoint
+            getAll,
+            getById,
+            addMultiple,
+            upsert,
+            delete
         )
 
         serverEndpoints

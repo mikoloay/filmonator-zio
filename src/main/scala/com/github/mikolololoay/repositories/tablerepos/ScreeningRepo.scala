@@ -13,15 +13,24 @@ class ScreeningRepo(quill: Quill.Postgres[SnakeCase]) extends TableRepo[Screenin
     override def getAll: ZIO[Any, SQLException, List[Screening]] = run(query[Screening])
 
     override def get(screeningId: String): ZIO[Any, SQLException, List[Screening]] = run:
-        query[Screening].filter(screening => screening.screeningId == lift(screeningId))
+        query[Screening].filter(_.screeningId == lift(screeningId))
 
     override def add(screening: Screening) = run(query[Screening].insertValue(lift(screening)))
 
     override def add(newScreenings: List[Screening]) = run:
         liftQuery(newScreenings).foreach(query[Screening].insertValue(_))
 
+    override def upsert(screening: Screening) =
+        val id = screening.screeningId
+        val existScreeningsWithId = get(id).map(_.nonEmpty)
+        ZIO.ifZIO(existScreeningsWithId)(
+            onTrue = run:
+                query[Screening].filter(_.screeningId == lift(id)).updateValue(lift(screening)),
+            onFalse = add(screening)
+        )
+
     override def delete(screeningId: String): ZIO[Any, SQLException, Long] = run:
-        query[Screening].filter(screening => screening.screeningId == lift(screeningId)).delete
+        query[Screening].filter(_.screeningId == lift(screeningId)).delete
 
     override def truncate() = run:
         query[Screening].delete

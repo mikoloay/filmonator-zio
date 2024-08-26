@@ -14,15 +14,24 @@ class MovieRepo(quill: Quill.Postgres[SnakeCase]) extends TableRepo[Movie]:
     override def getAll: ZIO[Any, SQLException, List[Movie]] = run(query[Movie])
 
     override def get(id: String): ZIO[Any, SQLException, List[Movie]] = run:
-        query[Movie].filter(movie => movie.id == lift(id))
+        query[Movie].filter(_.id == lift(id))
 
     override def add(movie: Movie) = run(query[Movie].insertValue(lift(movie)))
 
     override def add(newMovies: List[Movie]) = run:
         liftQuery(newMovies).foreach(query[Movie].insertValue(_))
 
+    override def upsert(movie: Movie) =
+        val id = movie.id
+        val existMoviesWithId = get(id).map(_.nonEmpty)
+        ZIO.ifZIO(existMoviesWithId)(
+            onTrue = run:
+                query[Movie].filter(_.id == lift(id)).updateValue(lift(movie)),
+            onFalse = add(movie)
+        )
+
     override def delete(id: String): ZIO[Any, SQLException, Long] = run:
-        query[Movie].filter(movie => movie.id == lift(id)).delete
+        query[Movie].filter(_.id == lift(id)).delete
 
     override def truncate() = run:
         query[Movie].delete

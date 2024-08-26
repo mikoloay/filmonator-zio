@@ -22,6 +22,7 @@ object HttpServer:
     val start =
         for
             actualPort <- Server.install(app)
-            _ <- Console.printLine(s"HEHE http://localhost:${actualPort}/docs")
+            _ <- Console.printLine(s"Started the Filmonator service.")
+            _ <- Console.printLine(s"You can read API documentation here: http://localhost:${actualPort}/api/docs")
             _ <- Console.readLine
         yield ()

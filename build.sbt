@@ -1,10 +1,11 @@
 ThisBuild / organization := "com.github.mikolololoay"
 ThisBuild / name := "filmonator-zio"
-ThisBuild / scalaVersion := "3.4.2"
+ThisBuild / scalaVersion := "3.5.0"
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
 
 val zioVersion = "2.1.6"
+val zioRedisVersion = "0.2.0"
 val postgresVersion = "42.7.3"
 val munitVersion = "1.0.0"
 val quillZioVersion = "4.8.5"
@@ -21,6 +22,7 @@ lazy val root = project
     libraryDependencies ++= Seq(
       "org.scalameta" %% "munit" % munitVersion % Test,
       "dev.zio" %% "zio" % zioVersion,
+      "dev.zio" %% "zio-redis" % zioRedisVersion,
       "io.getquill" %% "quill-jdbc-zio" % quillZioVersion,
       "org.postgresql" % "postgresql" % postgresVersion,
       ("com.nrinaudo" %% "kantan.csv-generic" % kantanCsvVersion).cross(CrossVersion.for3Use2_13),

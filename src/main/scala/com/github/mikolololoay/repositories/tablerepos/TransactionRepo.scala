@@ -16,7 +16,7 @@ class TransactionRepo(quill: Quill.Postgres[SnakeCase]) extends TableRepo[Ticket
 
     override def get(id: String): ZIO[Any, SQLException, List[TicketTransaction]] =
         run:
-            query[TicketTransaction].filter(transaction => transaction.id == lift(id))
+            query[TicketTransaction].filter(_.id == lift(id))
 
     override def add(transaction: TicketTransaction) = run(
         query[TicketTransaction].insertValue(lift(transaction))
@@ -25,9 +25,19 @@ class TransactionRepo(quill: Quill.Postgres[SnakeCase]) extends TableRepo[Ticket
     override def add(newTransactions: List[TicketTransaction]) = run:
         liftQuery(newTransactions).foreach(query[TicketTransaction].insertValue(_))
 
+    override def upsert(transaction: TicketTransaction) =
+        val id = transaction.id
+        val existTransactionsWithId = get(id).map(_.nonEmpty)
+        ZIO.ifZIO(existTransactionsWithId)(
+            onTrue = run:
+                query[TicketTransaction].filter(_.id == lift(id)).updateValue(lift(transaction)),
+            onFalse = add(transaction)
+        )
+
+
     override def delete(id: String): ZIO[Any, SQLException, Long] = run:
         query[TicketTransaction]
-            .filter(transaction => transaction.id == lift(id))
+            .filter(_.id == lift(id))
             .delete
 
     override def truncate() = run:

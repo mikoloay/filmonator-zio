@@ -13,15 +13,24 @@ class ScreeningRoomRepo(quill: Quill.Postgres[SnakeCase]) extends TableRepo[Scre
     override def getAll: ZIO[Any, SQLException, List[ScreeningRoom]] = run(query[ScreeningRoom])
 
     override def get(id: String): ZIO[Any, SQLException, List[ScreeningRoom]] = run:
-        query[ScreeningRoom].filter(screeningRoom => screeningRoom.id == lift(id))
+        query[ScreeningRoom].filter(_.id == lift(id))
 
     override def add(screeningRoom: ScreeningRoom) = run(query[ScreeningRoom].insertValue(lift(screeningRoom)))
 
     override def add(newScreeningRooms: List[ScreeningRoom]) = run:
         liftQuery(newScreeningRooms).foreach(query[ScreeningRoom].insertValue(_))
 
+    override def upsert(screeningRoom: ScreeningRoom) =
+        val id = screeningRoom.id
+        val existScreeningRoomsWithId = get(id).map(_.nonEmpty)
+        ZIO.ifZIO(existScreeningRoomsWithId)(
+            onTrue = run:
+                query[ScreeningRoom].filter(_.id == lift(id)).updateValue(lift(screeningRoom)),
+            onFalse = add(screeningRoom)
+        )
+
     override def delete(id: String): ZIO[Any, SQLException, Long] = run:
-        query[ScreeningRoom].filter(screeningRoom => screeningRoom.id == lift(id)).delete
+        query[ScreeningRoom].filter(_.id == lift(id)).delete
 
     override def truncate() = run:
         query[ScreeningRoom].delete

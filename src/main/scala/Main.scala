@@ -19,11 +19,16 @@ import kantan.csv.*
 import kantan.csv.ops.*
 import kantan.csv.generic.*
 import com.github.mikolololoay.utils.DatabaseInitializer
+import com.github.mikolololoay.utils.redis.ProtobufCodecSupplier
 import com.github.mikolololoay.repositories.tablerepos.TableRepo
 import com.github.mikolololoay.http.HttpServer
 import zio.ZLayer
 import zio.http.Server
 import com.github.mikolololoay.repositories.AggregationsRepo
+import com.github.mikolololoay.repositories.SessionRepo
+import zio.redis.*
+import zio.schema.*
+import zio.schema.codec.*
 
 
 object Main extends ZIOAppDefault:
@@ -44,7 +49,12 @@ object Main extends ZIOAppDefault:
                 TableRepo.layer,
                 AggregationsRepo.layer,
                 quillLayer,
-                dataSourceLayer
+                dataSourceLayer,
+                // Redis layers
+                SessionRepo.layer,
+                Redis.layer,
+                RedisExecutor.local,
+                ZLayer.succeed[CodecSupplier](ProtobufCodecSupplier)
             )
 
     override def run =
