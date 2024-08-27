@@ -21,7 +21,7 @@ object DatabaseInitializer:
                 initializeTable[TicketTransaction]("src/main/resources/initial_csvs/transactions.csv", ';')
             )
 
-    private def initializeTable[A: HeaderDecoder: Tag](
+    def initializeTable[A: HeaderDecoder: Tag](
             path: String,
             separator: Char
     ): ZIO[TableRepo[A], SQLException | IOException, Unit] =
