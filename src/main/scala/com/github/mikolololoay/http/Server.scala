@@ -1,16 +1,19 @@
 package com.github.mikolololoay.http
 
+import com.github.mikolololoay.models.Movie
+import com.github.mikolololoay.repositories.tablerepos.TableRepo
 import sttp.tapir.PublicEndpoint
-import sttp.tapir.ztapir.*
 import sttp.tapir.generic.auto.*
-import zio.*
-import zio.http.{Routes, Response, Server}
 import sttp.tapir.server.ziohttp.ZioHttpInterpreter
 import sttp.tapir.server.ziohttp.ZioHttpServerOptions
-import com.github.mikolololoay.repositories.tablerepos.TableRepo
-import com.github.mikolololoay.models.Movie
+import sttp.tapir.ztapir.*
+import zio.*
+import zio.http.Response
+import zio.http.Routes
+import zio.http.Server
 
 
+/** Provides logic necessary to start a HTTP Server. */
 object HttpServer:
     val port = 8081
     val serverOptions: ZioHttpServerOptions[Any] =

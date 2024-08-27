@@ -1,8 +1,8 @@
 package com.github.mikolololoay.repositories
 
-
-import zio.redis.*
 import zio.*
+import zio.redis.*
+
 import java.util.UUID
 
 
@@ -11,6 +11,11 @@ trait SessionRepo:
     def verifySession(sessionId: String): ZIO[Any, Any, Boolean]
 
 
+/** Provides all utilities necessary to interact with session data represented by unique ids
+  * kept by logged-in users as cookies.
+  *
+  * The default layer implements all this logic using Redis.
+  */
 object SessionRepo:
     def createUniqueSession(username: String): ZIO[SessionRepo, Any, UUID] =
         ZIO.serviceWithZIO[SessionRepo](_.createUniqueSession(username))
@@ -32,6 +37,5 @@ class SessionRepoImpl(redis: Redis) extends SessionRepo:
         yield uuid
 
     override def verifySession(sessionId: String) =
-        for
-            session <- redis.hGet(sessionsHash, sessionId).returning[String]
+        for session <- redis.hGet(sessionsHash, sessionId).returning[String]
         yield session.isDefined

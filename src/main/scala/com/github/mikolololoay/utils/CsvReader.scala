@@ -9,7 +9,14 @@ import kantan.codecs.resource.ResourceIterator
 import scala.io.Codec
 
 
+/** Provides utilities for interacting with csv files */
 object CsvReader:
+    /** Returns a list of instances of a selected type parsed from a csv file.
+      * 
+      * It's a simplified csv file reader which leaves most csv properties
+      * with their default values.
+      * Faulty rows which can't be converted to the selected type will be skipped.
+      */
     def readFromFile[T: HeaderDecoder](file: File, separator: Char) =
         given Codec = Codec.UTF8
 

@@ -1,18 +1,34 @@
 package com.github.mikolololoay.http
 
-import sttp.tapir.ztapir.*
-import sttp.tapir.generic.auto.*
-import zio.*
 import com.github.mikolololoay.http.Endpoints.EndpointsEnv
-import com.github.mikolololoay.views.{LoginView, PageGenerator}
-import sttp.model.headers.CookieValueWithMeta
-import sttp.model.{Header, Headers}
-import sttp.model.StatusCode
-import com.github.mikolololoay.views.UnauthenticatedView
-import sttp.model.headers.CookieWithMeta
 import com.github.mikolololoay.repositories.SessionRepo
+import com.github.mikolololoay.views.LoginView
+import com.github.mikolololoay.views.PageGenerator
+import com.github.mikolololoay.views.UnauthenticatedView
+import sttp.model.Header
+import sttp.model.Headers
+import sttp.model.StatusCode
+import sttp.model.headers.CookieValueWithMeta
+import sttp.model.headers.CookieWithMeta
+import sttp.tapir.generic.auto.*
+import sttp.tapir.ztapir.*
+import zio.*
 
 
+/** Provides all endpoints related to authentication.
+  * 
+  * All UI endpoints are secured by requiring a cookie with
+  * a correct session id. Guests can receive such a cookie
+  * by filling a form in the /login endpoint and sending it
+  * (currently only "admin" + "password" combination works :D).
+  * If the credentials are correct, a unique session id will
+  * be generated and sent to a cache store using SessionRepo
+  * (currently it uses Redis). Session ids from guests' browsers
+  * are compared with ids present on Redis.
+  * 
+  * API Endpoints currently don't require authentication, but
+  * someday they will require a valid Bearer token (TODO).
+  */
 object AuthEndpoints:
     case class LoginForm(username: String, password: String)
 
@@ -28,7 +44,6 @@ object AuthEndpoints:
             .in(formBody[LoginForm])
             .out(headers)
             .out(stringBody)
-            // .out(setCookie("sessionId"))
             .errorOut(stringBody)
             .zServerLogic {
                 case LoginForm("admin", "password") =>

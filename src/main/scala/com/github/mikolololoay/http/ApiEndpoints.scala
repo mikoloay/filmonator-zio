@@ -1,30 +1,45 @@
 package com.github.mikolololoay.http
 
-import sttp.tapir.PublicEndpoint
-import sttp.tapir.ztapir.*
-import sttp.tapir.generic.auto.*
-import zio.*
+import com.github.mikolololoay.http.Endpoints.EndpointsEnv
+import com.github.mikolololoay.models.Movie
+import com.github.mikolololoay.models.Screening
+import com.github.mikolololoay.models.ScreeningRoom
+import com.github.mikolololoay.models.Ticket
+import com.github.mikolololoay.models.TicketTransaction
 import com.github.mikolololoay.repositories.tablerepos.TableRepo
-import com.github.mikolololoay.models.{Movie, Screening, ScreeningRoom, Ticket, TicketTransaction}
-import sttp.tapir.json.zio.*
-import zio.json.JsonEncoder
-import zio.json.JsonDecoder
+import com.github.mikolololoay.views.MoviesView
+import com.github.mikolololoay.views.PageGenerator
+import sttp.tapir.PublicEndpoint
 import sttp.tapir.Schema
+import sttp.tapir.docs.openapi.OpenAPIDocsOptions
+import sttp.tapir.generic.auto.*
+import sttp.tapir.json.zio.*
+import sttp.tapir.swagger.SwaggerUIOptions
+import sttp.tapir.swagger.bundle.SwaggerInterpreter
+import sttp.tapir.ztapir.*
+import zio.*
 import zio.http.Handler
 import zio.http.template.Element.PartialElement
-import com.github.mikolololoay.views.{MoviesView, PageGenerator}
-import sttp.tapir.swagger.bundle.SwaggerInterpreter
-import com.github.mikolololoay.http.Endpoints.EndpointsEnv
-import sttp.tapir.docs.openapi.OpenAPIDocsOptions
-import sttp.tapir.swagger.SwaggerUIOptions
+import zio.json.JsonDecoder
+import zio.json.JsonEncoder
 
 
+/** Provides all endpoints related to Rest API and its OpenAPI specification. */
 object ApiEndpoints:
     val baseApiPrefix = "api"
     val baseApiEndpoint = endpoint
         .in(baseApiPrefix)
         .errorOut(stringBody)
 
+    /** Returns a list of CRUD endpoints for a model.
+      *
+      * Returned CRUD endpoints consist of:
+      *   - GET all elements
+      *   - GET one element by id
+      *   - POST a new element
+      *   - PUT an element (upsert)
+      *   - DELETE an element by id
+      */
     def crudEndpoints[A: JsonEncoder: JsonDecoder: Schema: Tag](endpointName: String) =
         val getAll: ZServerEndpoint[TableRepo[A], Any] =
             baseApiEndpoint.get
@@ -46,11 +61,11 @@ object ApiEndpoints:
                 .zServerLogic(items =>
                     (
                         TableRepo.add[A](items) *>
-                        ZIO.succeed(s"Successfully added ${items.size} new $endpointName.")
+                            ZIO.succeed(s"Successfully added ${items.size} new $endpointName.")
                     )
-                    .catchAll(e => ZIO.fail(e.getMessage()))
+                        .catchAll(e => ZIO.fail(e.getMessage()))
                 )
-    
+
         val upsert: ZServerEndpoint[TableRepo[A], Any] =
             baseApiEndpoint.put
                 .in(endpointName)
@@ -59,11 +74,11 @@ object ApiEndpoints:
                 .zServerLogic(item =>
                     (
                         TableRepo.upsert[A](item) *>
-                        ZIO.succeed(s"Successfully upserted item.")
+                            ZIO.succeed(s"Successfully upserted item.")
                     )
-                    .catchAll(e => ZIO.fail(e.getMessage()))
+                        .catchAll(e => ZIO.fail(e.getMessage()))
                 )
-        
+
         val delete: ZServerEndpoint[TableRepo[A], Any] =
             baseApiEndpoint.delete
                 .in(endpointName / path[String]("id"))
@@ -71,9 +86,9 @@ object ApiEndpoints:
                 .zServerLogic(id =>
                     (
                         TableRepo.delete[A](id) *>
-                        ZIO.succeed(s"Successfully deleted item.")
+                            ZIO.succeed(s"Successfully deleted item.")
                     )
-                    .catchAll(e => ZIO.fail(e.getMessage()))
+                        .catchAll(e => ZIO.fail(e.getMessage()))
                 )
 
         val serverEndpoints = List(

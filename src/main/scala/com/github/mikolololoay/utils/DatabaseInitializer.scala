@@ -10,6 +10,11 @@ import java.sql.SQLException
 import java.io.IOException
 
 
+/** Provides utilities to quickly initialize a database at the start of the application.
+  * 
+  * The initialization consists of recreating all tables (dropping them and creating from scratch)
+  * and filling them with data from csv files from the resources/initial_csvs folder.
+  */
 object DatabaseInitializer:
     def initialize() =
         ZIO.collectAllParDiscard:
