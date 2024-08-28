@@ -31,6 +31,14 @@ import scala.io.Source
 
 
 object Main extends ZIOAppDefault:
+    /** The final application.
+      * 
+      * First it initializes the db by recreating tables related to models
+      * and filling them with data from the resources/initial_csvs/.csv files.
+      * Then it starts the Http service locally.
+      * 
+      * The app requires local postgres and redis databases running.
+      */
     val app =
         val quillLayer = Quill.Postgres.fromNamingStrategy(SnakeCase)
         val dataSourceLayer = Quill.DataSource.fromPrefix("myDatabaseConfig")
