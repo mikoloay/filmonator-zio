@@ -1,10 +1,10 @@
-package com.github.mikolololoay.repositories.tablerepos
+package com.github.mikoloay.repositories.tablerepos
 
 import zio.*
 import io.getquill.*
 import io.getquill.jdbczio.Quill
 import java.sql.SQLException
-import com.github.mikolololoay.models.ScreeningRoom
+import com.github.mikoloay.models.ScreeningRoom
 
 
 class ScreeningRoomRepo(quill: Quill.Postgres[SnakeCase]) extends TableRepo[ScreeningRoom]:

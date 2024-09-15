@@ -1,11 +1,11 @@
-package com.github.mikolololoay.repositories.tablerepos
+package com.github.mikoloay.repositories.tablerepos
 
 import zio.*
 import zio.test.*
 import zio.test.Assertion.*
 import io.getquill.*
 import io.getquill.jdbczio.Quill
-import com.github.mikolololoay.models.Movie
+import com.github.mikoloay.models.Movie
 import io.zonky.test.db.postgres.embedded.EmbeddedPostgres
 
 

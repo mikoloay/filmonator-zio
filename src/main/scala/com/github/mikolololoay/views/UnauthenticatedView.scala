@@ -1,4 +1,4 @@
-package com.github.mikolololoay.views
+package com.github.mikoloay.views
 
 
 import scalatags.Text

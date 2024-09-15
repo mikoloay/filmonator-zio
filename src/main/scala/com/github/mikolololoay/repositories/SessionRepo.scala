@@ -1,4 +1,4 @@
-package com.github.mikolololoay.repositories
+package com.github.mikoloay.repositories
 
 import zio.*
 import zio.redis.*

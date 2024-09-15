@@ -1,9 +1,9 @@
-package com.github.mikolololoay.views
+package com.github.mikoloay.views
 
 
 import scalatags.Text
 import scalatags.Text.all.*
-import com.github.mikolololoay.views.htmx.HtmxAttributes
+import com.github.mikoloay.views.htmx.HtmxAttributes
 
 
 object LoginView:

@@ -1,7 +1,7 @@
-package com.github.mikolololoay.http
+package com.github.mikoloay.http
 
-import com.github.mikolololoay.models.Movie
-import com.github.mikolololoay.repositories.tablerepos.TableRepo
+import com.github.mikoloay.models.Movie
+import com.github.mikoloay.repositories.tablerepos.TableRepo
 import sttp.tapir.PublicEndpoint
 import sttp.tapir.generic.auto.*
 import sttp.tapir.server.ziohttp.ZioHttpInterpreter

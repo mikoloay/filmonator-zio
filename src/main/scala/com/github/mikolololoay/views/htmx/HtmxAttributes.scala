@@ -1,4 +1,4 @@
-package com.github.mikolololoay.views.htmx
+package com.github.mikoloay.views.htmx
 
 import scalatags.Text.all.*
 

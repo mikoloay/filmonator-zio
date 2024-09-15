@@ -1,6 +1,6 @@
-package com.github.mikolololoay.views
+package com.github.mikoloay.views
 
-import com.github.mikolololoay.views.htmx.HtmxAttributes
+import com.github.mikoloay.views.htmx.HtmxAttributes
 import scalatags.Text.TypedTag
 import scalatags.Text.all.*
 

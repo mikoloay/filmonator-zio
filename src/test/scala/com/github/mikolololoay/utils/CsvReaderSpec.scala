@@ -1,10 +1,10 @@
-package com.github.mikolololoay.utils
+package com.github.mikoloay.utils
 
 
 import zio.*
 import zio.test.*
 import zio.test.Assertion.*
-import com.github.mikolololoay.models.Movie
+import com.github.mikoloay.models.Movie
 import java.io.File
 
 

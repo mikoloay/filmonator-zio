@@ -1,10 +1,10 @@
-package com.github.mikolololoay.http
+package com.github.mikoloay.http
 
-import com.github.mikolololoay.http.Endpoints.EndpointsEnv
-import com.github.mikolololoay.repositories.SessionRepo
-import com.github.mikolololoay.views.LoginView
-import com.github.mikolololoay.views.PageGenerator
-import com.github.mikolololoay.views.UnauthenticatedView
+import com.github.mikoloay.http.Endpoints.EndpointsEnv
+import com.github.mikoloay.repositories.SessionRepo
+import com.github.mikoloay.views.LoginView
+import com.github.mikoloay.views.PageGenerator
+import com.github.mikoloay.views.UnauthenticatedView
 import sttp.model.Header
 import sttp.model.Headers
 import sttp.model.StatusCode

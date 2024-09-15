@@ -1,14 +1,14 @@
-package com.github.mikolololoay.http
+package com.github.mikoloay.http
 
-import com.github.mikolololoay.http.Endpoints.EndpointsEnv
-import com.github.mikolololoay.models.Movie
-import com.github.mikolololoay.models.Screening
-import com.github.mikolololoay.models.ScreeningRoom
-import com.github.mikolololoay.models.Ticket
-import com.github.mikolololoay.models.TicketTransaction
-import com.github.mikolololoay.repositories.tablerepos.TableRepo
-import com.github.mikolololoay.views.MoviesView
-import com.github.mikolololoay.views.PageGenerator
+import com.github.mikoloay.http.Endpoints.EndpointsEnv
+import com.github.mikoloay.models.Movie
+import com.github.mikoloay.models.Screening
+import com.github.mikoloay.models.ScreeningRoom
+import com.github.mikoloay.models.Ticket
+import com.github.mikoloay.models.TicketTransaction
+import com.github.mikoloay.repositories.tablerepos.TableRepo
+import com.github.mikoloay.views.MoviesView
+import com.github.mikoloay.views.PageGenerator
 import sttp.tapir.PublicEndpoint
 import sttp.tapir.Schema
 import sttp.tapir.docs.openapi.OpenAPIDocsOptions

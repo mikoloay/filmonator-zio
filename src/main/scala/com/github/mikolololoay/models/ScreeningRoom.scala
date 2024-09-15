@@ -1,4 +1,4 @@
-package com.github.mikolololoay.models
+package com.github.mikoloay.models
 
 import kantan.csv.RowDecoder
 import zio.json.{JsonEncoder, JsonDecoder}

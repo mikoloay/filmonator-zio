@@ -1,4 +1,4 @@
-package com.github.mikolololoay.models.aggregations
+package com.github.mikoloay.models.aggregations
 
 import zio.json.{JsonEncoder, JsonDecoder}
 

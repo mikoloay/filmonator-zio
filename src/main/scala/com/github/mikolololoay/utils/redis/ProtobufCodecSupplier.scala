@@ -1,4 +1,4 @@
-package com.github.mikolololoay.utils.redis
+package com.github.mikoloay.utils.redis
 
 import zio.redis.CodecSupplier
 import zio.schema.Schema

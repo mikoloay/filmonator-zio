@@ -1,10 +1,10 @@
-package com.github.mikolololoay.views
+package com.github.mikoloay.views
 
-import com.github.mikolololoay.models.Movie
-import com.github.mikolololoay.views.htmx.HtmxAttributes
+import com.github.mikoloay.models.Movie
+import com.github.mikoloay.views.htmx.HtmxAttributes
 import scalatags.Text
 import scalatags.Text.all.*
-import com.github.mikolololoay.models.Screening
+import com.github.mikoloay.models.Screening
 
 
 object ScreeningsView:

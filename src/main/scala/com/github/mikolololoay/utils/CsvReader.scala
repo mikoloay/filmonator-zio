@@ -1,4 +1,4 @@
-package com.github.mikolololoay.utils
+package com.github.mikoloay.utils
 
 import kantan.csv.*
 import kantan.csv.ops.*

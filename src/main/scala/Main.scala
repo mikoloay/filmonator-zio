@@ -1,15 +1,15 @@
-package com.github.mikolololoay
+package com.github.mikoloay
 
-import com.github.mikolololoay.http.HttpServer
-import com.github.mikolololoay.models.Movie
-import com.github.mikolololoay.models.TicketTransaction
-import com.github.mikolololoay.repositories.AggregationsRepo
-import com.github.mikolololoay.repositories.SessionRepo
-import com.github.mikolololoay.repositories.tablerepos.MovieRepo
-import com.github.mikolololoay.repositories.tablerepos.TableRepo
-import com.github.mikolololoay.utils.CsvReader
-import com.github.mikolololoay.utils.DatabaseInitializer
-import com.github.mikolololoay.utils.redis.ProtobufCodecSupplier
+import com.github.mikoloay.http.HttpServer
+import com.github.mikoloay.models.Movie
+import com.github.mikoloay.models.TicketTransaction
+import com.github.mikoloay.repositories.AggregationsRepo
+import com.github.mikoloay.repositories.SessionRepo
+import com.github.mikoloay.repositories.tablerepos.MovieRepo
+import com.github.mikoloay.repositories.tablerepos.TableRepo
+import com.github.mikoloay.utils.CsvReader
+import com.github.mikoloay.utils.DatabaseInitializer
+import com.github.mikoloay.utils.redis.ProtobufCodecSupplier
 import io.getquill.*
 import io.getquill.jdbczio.Quill
 import kantan.csv.*

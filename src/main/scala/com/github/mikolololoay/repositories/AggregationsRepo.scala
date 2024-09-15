@@ -1,12 +1,12 @@
-package com.github.mikolololoay.repositories
+package com.github.mikoloay.repositories
 
-import com.github.mikolololoay.utils.DateUtils
+import com.github.mikoloay.utils.DateUtils
 import java.sql.SQLException
 import zio.*
 import io.getquill.jdbczio.Quill
 import io.getquill.*
-import com.github.mikolololoay.models.{Movie, Screening, ScreeningRoom, Ticket, TicketTransaction}
-import com.github.mikolololoay.models.aggregations.ScreeningWithDetails
+import com.github.mikoloay.models.{Movie, Screening, ScreeningRoom, Ticket, TicketTransaction}
+import com.github.mikoloay.models.aggregations.ScreeningWithDetails
 
 
 trait AggregationsRepo:
